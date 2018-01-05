@@ -66,3 +66,31 @@ function drawEventMarker(name, description, lat, lon) {
         infowindow.open(map, marker);
     });
 }
+
+function meetupCall() {
+  var apiKey = "4f744e465f2424426f5d1a5b2532ab";
+  // Perfoming an AJAX GET request to our queryURL
+  var search;
+
+  var queryUrl = "https://api.meetup.com/2/open_events?zip=80222&radius=5&key=" + apiKey;
+// https://api.meetup.com/2/open_events?zip=80210&key=4f744e465f2424426f5d1a5b2532ab
+  $.ajax({
+    url: queryUrl,
+    method: "GET"
+  })
+    .done(function(response) {
+        console.log(queryUrl);
+        console.log(response.results[0].venue.lat);
+        console.log(response.results[0].venue.lon);
+        //response.results[0]
+    })
+    .fail(function(err) {
+      throw err;
+    });
+}
+
+
+
+
+
+
