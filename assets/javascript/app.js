@@ -44,7 +44,7 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 
 function drawEventMarker(name, description, lat, lon, url, urlname, label) {
     var contentString = `<div id="content">
-    <h1 id="firstHeading" class="firstHeading">${name}</h1>
+    <h4 id="firstHeading" class="firstHeading">${name}</h4>
     <div id="bodyContent">
     <p>${description}</p>
     <p><a href="${url}">${urlname}</a></p>
