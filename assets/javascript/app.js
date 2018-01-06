@@ -88,6 +88,28 @@ function meetupCall() {
       throw err;
     });
 }
+function eventCall() {
+  var apiKey = "JsML7nJWQcCg3rCb";
+  // Perfoming an AJAX GET request to our queryURL
+  var search;
+
+  var queryUrl = "https://api.eventful.com/json/events/search?app_key=" + apiKey + "&where=32.746682,-117.162741&within=25";
+
+  $.ajax({
+    url: queryUrl,
+    method: "GET",
+    dataType: "json"
+  })
+    .done(function(response) {
+        console.log(queryUrl);
+        console.log(response.events.event[0].latitude);
+        console.log(response.events.event[0].longitude);
+
+    })
+    .fail(function(err) {
+      throw err;
+    });
+}
 
 
 
