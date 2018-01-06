@@ -84,7 +84,7 @@ function meetupCall() {
         console.log(queryUrl);
         console.log(response.results[0].venue.lat);
         console.log(response.results[0].venue.lon);
-        
+
         for (let index = 0; index < 10; index++) {
             const element = response.results[index];
             let name = element.name;
@@ -142,9 +142,4 @@ function eventCall() {
       throw err;
     });
 }
-
-
-
-
-
 
