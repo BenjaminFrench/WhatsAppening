@@ -42,11 +42,12 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     infoWindow.open(map);
 }
 
-function drawEventMarker(name, description, lat, lon) {
+function drawEventMarker(name, description, lat, lon, url, urlname) {
     var contentString = `<div id="content">
     <h1 id="firstHeading" class="firstHeading">${name}</h1>
     <div id="bodyContent">
     <p>${description}</p>
+    <p><a href="${url}">${urlname}</a></p>
     </div>
     </div>`;
 
@@ -82,6 +83,28 @@ function meetupCall() {
         console.log(queryUrl);
         console.log(response.results[0].venue.lat);
         console.log(response.results[0].venue.lon);
+        
+        for (let index = 0; index < 10; index++) {
+            const element = response.results[index];
+            let name = element.name;
+            let desc = element.name;
+            if (element.hasOwnProperty('venue')) {
+                let lat = element.venue.lat;
+                let lon = element.venue.lon;
+                let url = element.event_url;
+                let urlname = element.group.urlname;
+                drawEventMarker(name, desc, lat, lon, url, urlname);
+            }
+            else if (element.hasOwnProperty('group')) {
+                let lat = element.group.group_lat;
+                let lon = element.group.group_lon;
+                let url = element.event_url;
+                let urlname = element.group.urlname;
+                drawEventMarker(name, desc, lat, lon, url, urlname);
+            }
+
+            
+        }
         //response.results[0]
     })
     .fail(function(err) {
