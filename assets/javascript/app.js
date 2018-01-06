@@ -8,7 +8,14 @@ function initMap() {
             lat: 39.739,
             lng: -104.9903
         },
-        zoom: 8
+        zoom: 8,
+        gestureHandling: 'cooperative',        
+        streetViewControl: false,
+        mapTypeControl: true,
+        mapTypeControlOptions: {
+          style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+          mapTypeIds: ['roadmap', 'terrain']
+        }    
     });
     infoWindow = new google.maps.InfoWindow;
 
