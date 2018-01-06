@@ -42,9 +42,9 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     infoWindow.open(map);
 }
 
-function drawEventMarker(name, description, lat, lon, url, urlname) {
+function drawEventMarker(name, description, lat, lon, url, urlname, label) {
     var contentString = `<div id="content">
-    <h1 id="firstHeading" class="firstHeading">${name}</h1>
+    <h4 id="firstHeading" class="firstHeading">${name}</h4>
     <div id="bodyContent">
     <p>${description}</p>
     <p><a href="${url}">${urlname}</a></p>
@@ -61,7 +61,8 @@ function drawEventMarker(name, description, lat, lon, url, urlname) {
             lng: lon
         },
         map: map,
-        title: name
+        title: name,
+        label: label
     });
     marker.addListener('click', function () {
         infowindow.open(map, marker);
@@ -93,19 +94,16 @@ function meetupCall() {
                 let lon = element.venue.lon;
                 let url = element.event_url;
                 let urlname = element.group.urlname;
-                drawEventMarker(name, desc, lat, lon, url, urlname);
+                drawEventMarker(name, desc, lat, lon, url, urlname, String(index+1));
             }
             else if (element.hasOwnProperty('group')) {
                 let lat = element.group.group_lat;
                 let lon = element.group.group_lon;
                 let url = element.event_url;
                 let urlname = element.group.urlname;
-                drawEventMarker(name, desc, lat, lon, url, urlname);
+                drawEventMarker(name, desc, lat, lon, url, urlname, String(index+1));
             }
-
-            
         }
-        //response.results[0]
     })
     .fail(function(err) {
       throw err;
@@ -116,7 +114,7 @@ function eventCall() {
   // Perfoming an AJAX GET request to our queryURL
   var search;
 
-  var queryUrl = "https://api.eventful.com/json/events/search?app_key=" + apiKey + "&where=32.746682,-117.162741&within=25";
+  var queryUrl = "https://api.eventful.com/json/events/search?app_key=" + apiKey + "&where=39.739,-104.9903&within=25";
 
   $.ajax({
     url: queryUrl,
@@ -127,6 +125,17 @@ function eventCall() {
         console.log(queryUrl);
         console.log(response.events.event[0].latitude);
         console.log(response.events.event[0].longitude);
+
+        for (let index = 0; index < 10; index++) {
+            const element = response.events.event[index];
+            let name = element.title;
+            let desc = element.description;
+            let lat = parseFloat(element.latitude);
+            let lon = parseFloat(element.longitude);
+            let url = element.url;
+            let urlname = element.title;
+            drawEventMarker(name, desc, lat, lon, url, urlname, String(index+1));
+        }
 
     })
     .fail(function(err) {
