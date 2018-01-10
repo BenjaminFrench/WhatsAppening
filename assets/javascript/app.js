@@ -2,6 +2,8 @@ var userLocation;
 
 var map, infoWindow;
 
+var markers = [];
+
 function initMap() {
     map = new google.maps.Map(document.getElementById('mapDiv'), {
         center: {
