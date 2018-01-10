@@ -1,4 +1,5 @@
 var userLocation;
+var userLocated = false;
 
 var map, infoWindow;
 
@@ -29,6 +30,7 @@ function initMap() {
                 lng: position.coords.longitude
             };
             userLocation = pos;
+            userLocated = true;
 
             infoWindow.setPosition(pos);
             infoWindow.setContent('Location found.');
@@ -46,11 +48,13 @@ function initMap() {
 }
 
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-    infoWindow.setPosition(pos);
-    infoWindow.setContent(browserHasGeolocation ?
-        'Error: The Geolocation service failed.' :
-        'Error: Your browser doesn\'t support geolocation.');
-    infoWindow.open(map);
+    console.log("Geolocation has failed or been blocked by user.");
+    userLocated = false;
+    // infoWindow.setPosition(pos);
+    // infoWindow.setContent(browserHasGeolocation ?
+    //     'Error: The Geolocation service failed.' :
+    //     'Error: Your browser doesn\'t support geolocation.');
+    // infoWindow.open(map);
 }
 
 function drawEventMarker(name, description, lat, lon, url, urlname, label) {
@@ -75,10 +79,14 @@ function drawEventMarker(name, description, lat, lon, url, urlname, label) {
         title: name,
         label: label
     });
+
+    // Click listener for markers
     marker.addListener('click', function () {
         infowindow.open(map, marker);
+        $('#offCanvasRight').foundation('open', event)
     });
 
+    // Push each marker into a global array so we can delete them all later
     markers.push(marker);
 }
 
@@ -93,37 +101,51 @@ function clearEventMarkers() {
 // function to call meetup api
 function meetupCall(calltype) {
     var apiKey = "4f744e465f2424426f5d1a5b2532ab";
+    var endpointUrl = "https://api.meetup.com/2/open_events";
+    
     // Perfoming an AJAX GET request to our queryURL
     var search;
 
     // format call based on calltype parameter
     switch (calltype) {
+        // by current location, no search term
         case 0:
+            if (!userLocated) {
+                throw "User has not been GeoLocated"
+            }
+            else {
+                var data = { lat: userLocation.lat, lon: userLocation.lng, radius: "5", key: apiKey };
 
+            }
             break;
+        // by current location, with search term
         case 1:
-
+            if (!userLocated) {
+                throw "User has not been GeoLocated"
+            }
             break;
+        // by zip, with search term
         case 2:
 
             break;
+        // by zip, no search term
         case 3:
 
             break;
 
         default:
+            throw "No calltype specified"
             break;
     }
-    var data = { lat: userLocation.lat, lon: userLocation.lng, radius: "5", key: apiKey };
-    var queryUrl = "https://api.meetup.com/2/open_events";
+    // var data = { lat: userLocation.lat, lon: userLocation.lng, radius: "5", key: apiKey };
 
     $.ajax({
-        url: queryUrl,
+        url: endpointUrl,
         data: data,
         method: "GET"
     })
         .done(function (response) {
-            console.log(queryUrl);
+            console.log(endpointUrl);
             console.log(response.results[0].venue.lat);
             console.log(response.results[0].venue.lon);
 
