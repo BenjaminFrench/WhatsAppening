@@ -34,6 +34,8 @@ function initMap() {
             infoWindow.setContent('Location found.');
             infoWindow.open(map);
             map.setCenter(pos);
+            
+            //
         }, function () {
             handleLocationError(true, infoWindow, map.getCenter());
         });
@@ -76,48 +78,81 @@ function drawEventMarker(name, description, lat, lon, url, urlname, label) {
     marker.addListener('click', function () {
         infowindow.open(map, marker);
     });
+
+    markers.push(marker);
 }
 
-function meetupCall() {
-  var apiKey = "4f744e465f2424426f5d1a5b2532ab";
-  // Perfoming an AJAX GET request to our queryURL
-  var search;
-
-  var queryUrl = "https://api.meetup.com/2/open_events?zip=80222&radius=5&key=" + apiKey;
-// https://api.meetup.com/2/open_events?zip=80210&key=4f744e465f2424426f5d1a5b2532ab
-  $.ajax({
-    url: queryUrl,
-    method: "GET"
-  })
-    .done(function(response) {
-        console.log(queryUrl);
-        console.log(response.results[0].venue.lat);
-        console.log(response.results[0].venue.lon);
-
-        for (let index = 0; index < 10; index++) {
-            const element = response.results[index];
-            let name = element.name;
-            let desc = element.name;
-            if (element.hasOwnProperty('venue')) {
-                let lat = element.venue.lat;
-                let lon = element.venue.lon;
-                let url = element.event_url;
-                let urlname = element.group.urlname;
-                drawEventMarker(name, desc, lat, lon, url, urlname, String(index+1));
-            }
-            else if (element.hasOwnProperty('group')) {
-                let lat = element.group.group_lat;
-                let lon = element.group.group_lon;
-                let url = element.event_url;
-                let urlname = element.group.urlname;
-                drawEventMarker(name, desc, lat, lon, url, urlname, String(index+1));
-            }
-        }
-    })
-    .fail(function(err) {
-      throw err;
+// Delete all event markers on the map
+function clearEventMarkers() {
+    markers.forEach(marker => {
+        marker.setMap(null);
     });
+    markers = [];
 }
+
+// function to call meetup api
+function meetupCall(calltype) {
+    var apiKey = "4f744e465f2424426f5d1a5b2532ab";
+    // Perfoming an AJAX GET request to our queryURL
+    var search;
+
+    // format call based on calltype parameter
+    switch (calltype) {
+        case 0:
+
+            break;
+        case 1:
+
+            break;
+        case 2:
+
+            break;
+        case 3:
+
+            break;
+
+        default:
+            break;
+    }
+    var data = { lat: userLocation.lat, lon: userLocation.lng, radius: "5", key: apiKey };
+    var queryUrl = "https://api.meetup.com/2/open_events";
+
+    $.ajax({
+        url: queryUrl,
+        data: data,
+        method: "GET"
+    })
+        .done(function (response) {
+            console.log(queryUrl);
+            console.log(response.results[0].venue.lat);
+            console.log(response.results[0].venue.lon);
+
+            for (let index = 0; index < 10; index++) {
+                const element = response.results[index];
+                let name = element.name;
+                let desc = element.name;
+                if (element.hasOwnProperty('venue')) {
+                    let lat = element.venue.lat;
+                    let lon = element.venue.lon;
+                    let url = element.event_url;
+                    let urlname = element.group.urlname;
+                    drawEventMarker(name, desc, lat, lon, url, urlname, String(index + 1));
+                }
+                else if (element.hasOwnProperty('group')) {
+                    let lat = element.group.group_lat;
+                    let lon = element.group.group_lon;
+                    let url = element.event_url;
+                    let urlname = element.group.urlname;
+                    drawEventMarker(name, desc, lat, lon, url, urlname, String(index + 1));
+                }
+            }
+        })
+        .fail(function (err) {
+            throw err;
+        });
+}
+
+// function to call eventful api
 function eventCall() {
   var apiKey = "JsML7nJWQcCg3rCb";
   // Perfoming an AJAX GET request to our queryURL
