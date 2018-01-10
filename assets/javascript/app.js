@@ -32,16 +32,23 @@ function initMap() {
             userLocation = pos;
             userLocated = true;
 
-            infoWindow.setPosition(pos);
-            infoWindow.setContent('Location found.');
-            infoWindow.open(map);
-            map.setCenter(pos);
+            // infoWindow.setPosition(pos);
+            // infoWindow.setContent('Location found.');
+            // infoWindow.open(map);
             
-            //
-        }, function () {
+            // Center map on user's location
+            map.setCenter(pos);
+
+            // Make api call with user's location and no search query
+            meetupCall(0);
+            
+        },
+        function () {
+            // Geolocation failed
             handleLocationError(true, infoWindow, map.getCenter());
         });
-    } else {
+    }
+    else {
         // Browser doesn't support Geolocation
         handleLocationError(false, infoWindow, map.getCenter());
     }
@@ -58,6 +65,7 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 }
 
 function drawEventMarker(name, description, lat, lon, url, urlname, label) {
+    // Make content string for the markers infowindow
     var contentString = `<div id="content">
     <h4 id="firstHeading" class="firstHeading">${name}</h4>
     <div id="bodyContent">
@@ -66,10 +74,12 @@ function drawEventMarker(name, description, lat, lon, url, urlname, label) {
     </div>
     </div>`;
 
+    // Crete the infowindow
     var infowindow = new google.maps.InfoWindow({
         content: contentString
     });
 
+    // Create the marker
     var marker = new google.maps.Marker({
         position: {
             lat: lat,
@@ -82,7 +92,10 @@ function drawEventMarker(name, description, lat, lon, url, urlname, label) {
 
     // Click listener for markers
     marker.addListener('click', function () {
+        // Open the marker's infowindow
         infowindow.open(map, marker);
+        
+        // Open the offcanvas sidebar
         $('#offCanvasRight').foundation('open', event)
     });
 
