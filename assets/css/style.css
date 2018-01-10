@@ -4,9 +4,18 @@ html, body {
     padding: 0;
   }
 
-
 #mapDiv {
     /* height: 100%; */
     height: 500px;
 }
 
+.jumbotron {
+  padding-top: 0px;
+  padding-bottom:0px;
+  background-image:url('http://www.4usky.com/data/out/23/164186266-crowd-wallpapers.jpg');
+  background-size: cover;
+  background: contain;
+  width: 100%;
+  height: 300px;
+  max-width:1400px;
+}
