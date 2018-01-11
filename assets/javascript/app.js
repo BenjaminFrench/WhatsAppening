@@ -118,6 +118,7 @@ function meetupCall(calltype) {
     
     // Perfoming an AJAX GET request to our queryURL
     var search;
+    var zip = 80210;
 
     // format call based on calltype parameter
     switch (calltype) {
@@ -136,21 +137,28 @@ function meetupCall(calltype) {
             if (!userLocated) {
                 throw "User has not been GeoLocated"
             }
-            break;
-        // by zip, with search term
-        case 2:
-
+            else {
+                search = $("#search-box").val().trim();
+                var data = { lat: userLocation.lat, lon: userLocation.lng, radius: "5", text: search, and_text: true, key: apiKey };
+            }
             break;
         // by zip, no search term
+        case 2:
+            var data = { zip: zip, radius: "5", key: apiKey };
+            break;
+        // by zip, with search term
         case 3:
-
+            var data = { zip: zip, text: search, radius: "5", key: apiKey };
             break;
 
         default:
             throw "No calltype specified"
             break;
     }
-    // var data = { lat: userLocation.lat, lon: userLocation.lng, radius: "5", key: apiKey };
+    // clear the current events when making a new call
+    if (markers.length !== 0) {
+        clearEventMarkers();
+    }
 
     $.ajax({
         url: endpointUrl,
@@ -158,9 +166,10 @@ function meetupCall(calltype) {
         method: "GET"
     })
         .done(function (response) {
+            if (response.results.length === 0) {
+                throw "No results";
+            }
             console.log(endpointUrl);
-            console.log(response.results[0].venue.lat);
-            console.log(response.results[0].venue.lon);
 
             for (let index = 0; index < 10; index++) {
                 const element = response.results[index];
@@ -221,3 +230,7 @@ function eventCall() {
       throw err;
     });
 }
+
+$("#search-button").on("click", function() {
+    meetupCall(1);
+});
