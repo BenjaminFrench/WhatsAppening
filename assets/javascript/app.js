@@ -13,11 +13,14 @@ var database = firebase.database();
 var userLocation;
 var userLocated = false;
 
-var map, infoWindow;
+var map;
+var infoWindow;
+var geocoder;
 
 var markers = [];
 
 function initMap() {
+    geocoder = new google.maps.Geocoder();
     map = new google.maps.Map(document.getElementById('mapDiv'), {
         center: {
             lat: 39.739,
@@ -91,6 +94,21 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     // infoWindow.open(map);
 }
 
+function codeZip() {
+    var zip = $('#search-box').val().trim();
+    geocoder.geocode( { 'address': zip}, function(results, status) {
+      if (status == 'OK') {
+        map.setCenter(results[0].geometry.location);
+        // var marker = new google.maps.Marker({
+        //     map: map,
+        //     position: results[0].geometry.location
+        // });
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+      }
+    });
+  }
+
 function drawEventMarker(name, description, lat, lon, url, urlname, label) {
     // Make content string for the markers infowindow
     var contentString = `<div id="content">
@@ -155,19 +173,14 @@ function meetupCall(calltype) {
                 throw "User has not been GeoLocated"
             }
             else {
-                var data = { lat: userLocation.lat, lon: userLocation.lng, radius: "5", key: apiKey };
+                var data = { lat: userLocation.lat, lon: userLocation.lng, radius: "10", key: apiKey };
 
             }
             break;
         // by zip
         case 1:
-            if (!userLocated) {
-                throw "User has not been GeoLocated"
-            }
-            else {
-                zip = $("#search-box").val().trim();
-                var data = { zip: zip, radius: "5", key: apiKey };
-            }
+            zip = $("#search-box").val().trim();
+            var data = { zip: zip, radius: "10", key: apiKey };
             break;
 
         default:
@@ -190,25 +203,27 @@ function meetupCall(calltype) {
             }
             console.log(endpointUrl);
 
-            for (let index = 0; index < 10; index++) {
+            for (var index = 0; index < 10; index++) {
                 const element = response.results[index];
-                let name = element.name;
-                let desc = element.name;
+                var name = element.name;
+                var desc = element.name;
                 if (element.hasOwnProperty('venue')) {
-                    let lat = element.venue.lat;
-                    let lon = element.venue.lon;
-                    let url = element.event_url;
-                    let urlname = element.group.urlname;
+                    var lat = element.venue.lat;
+                    var lon = element.venue.lon;
+                    var url = element.event_url;
+                    var urlname = element.group.urlname;
                     drawEventMarker(name, desc, lat, lon, url, urlname, String(index + 1));
                 }
                 else if (element.hasOwnProperty('group')) {
-                    let lat = element.group.group_lat;
-                    let lon = element.group.group_lon;
-                    let url = element.event_url;
-                    let urlname = element.group.urlname;
+                    var lat = element.group.group_lat;
+                    var lon = element.group.group_lon;
+                    var url = element.event_url;
+                    var urlname = element.group.urlname;
                     drawEventMarker(name, desc, lat, lon, url, urlname, String(index + 1));
                 }
             }
+
+            map.setZoom(11);
         })
         .fail(function (err) {
             throw err;
@@ -217,5 +232,56 @@ function meetupCall(calltype) {
 
 $("#search-button").on("click", function(event) {
     event.preventDefault();
+    codeZip();
     meetupCall(1);
+});
+
+$("#location-img").on("click", function() {
+    if (userLocated) {
+        map.setCenter(userLocation);
+        meetupCall(0);
+    }
+    else {
+        // Try HTML5 geolocation.
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                var pos = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+                userLocation = pos;
+                userLocated = true;
+
+                // infoWindow.setPosition(pos);
+                // infoWindow.setContent('Location found.');
+                // infoWindow.open(map);
+
+                // Center map on user's location
+                map.setCenter(pos);
+                var date = Date();
+                console.log(date);
+                var userInfo = {
+                    time: date,
+                    lat: pos.lat,
+                    lon: pos.lng
+                };
+                // latitude: userLocation.pos.lat;
+                // longitude:
+
+                database.ref().push(userInfo);
+
+                // Make api call with user's location and no search query
+                meetupCall(0);
+
+            },
+                function () {
+                    // Geolocation failed
+                    handleLocationError(true, infoWindow, map.getCenter());
+                });
+        }
+        else {
+            // Browser doesn't support Geolocation
+            handleLocationError(false, infoWindow, map.getCenter());
+        }
+    }
 });
