@@ -82,6 +82,10 @@ function initMap() {
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     console.log("Geolocation has failed or been blocked by user.");
     userLocated = false;
+
+    // show modal if geolocation fails or is blocked
+    $("#exampleModal1").foundation('open');
+
     // infoWindow.setPosition(pos);
     // infoWindow.setContent(browserHasGeolocation ?
     //     'Error: The Geolocation service failed.' :
@@ -157,14 +161,14 @@ function meetupCall(calltype) {
 
             }
             break;
-        // by current location, with search term
+        // by zip
         case 1:
             if (!userLocated) {
                 throw "User has not been GeoLocated"
             }
             else {
-                search = $("#search-box").val().trim();
-                var data = { lat: userLocation.lat, lon: userLocation.lng, radius: "5", text: search, and_text: true, key: apiKey };
+                zip = $("#search-box").val().trim();
+                var data = { zip: zip, radius: "5", text: search, and_text: true, key: apiKey };
             }
             break;
         // by zip, no search term
