@@ -230,10 +230,23 @@ function meetupCall(calltype) {
         });
 }
 
+// need to implement
+function checkZip(value) {
+    return true;
+}
+
 $("#search-button").on("click", function(event) {
     event.preventDefault();
-    codeZip();
-    meetupCall(1);
+    var value = $('#zip').val();
+    if (checkZip(value)) {
+        codeZip();
+        meetupCall(1);
+    }
+    else {
+        $("#search-box").val("");
+        $("#search-box").attr("placeholder", "Invalid Zip!");
+    }
+    
 });
 
 $("#location-img").on("click", function() {
