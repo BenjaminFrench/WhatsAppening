@@ -165,7 +165,7 @@ function meetupCall(calltype) {
             }
             else {
                 zip = $("#search-box").val().trim();
-                var data = { zip: zip, radius: "5", text: search, and_text: true, key: apiKey };
+                var data = { zip: zip, radius: "5", key: apiKey };
             }
             break;
 
@@ -214,6 +214,7 @@ function meetupCall(calltype) {
         });
 }
 
-$("#search-button").on("click", function() {
+$("#search-button").on("click", function(event) {
+    event.preventDefault();
     meetupCall(1);
 });
