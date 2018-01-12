@@ -151,7 +151,7 @@ function meetupCall(calltype) {
 
     // format call based on calltype parameter
     switch (calltype) {
-        // by current location, no search term
+        // by current location
         case 0:
             if (!userLocated) {
                 throw "User has not been GeoLocated"
@@ -170,14 +170,6 @@ function meetupCall(calltype) {
                 zip = $("#search-box").val().trim();
                 var data = { zip: zip, radius: "5", text: search, and_text: true, key: apiKey };
             }
-            break;
-        // by zip, no search term
-        case 2:
-            var data = { zip: zip, radius: "5", key: apiKey };
-            break;
-        // by zip, with search term
-        case 3:
-            var data = { zip: zip, text: search, radius: "5", key: apiKey };
             break;
 
         default:
@@ -223,41 +215,6 @@ function meetupCall(calltype) {
         .fail(function (err) {
             throw err;
         });
-}
-
-// function to call eventful api
-function eventCall() {
-  var apiKey = "JsML7nJWQcCg3rCb";
-  // Perfoming an AJAX GET request to our queryURL
-  var search;
-
-  var queryUrl = "https://api.eventful.com/json/events/search?app_key=" + apiKey + "&where=39.739,-104.9903&within=25";
-
-  $.ajax({
-    url: queryUrl,
-    method: "GET",
-    dataType: "json"
-  })
-    .done(function(response) {
-        console.log(queryUrl);
-        console.log(response.events.event[0].latitude);
-        console.log(response.events.event[0].longitude);
-
-        for (let index = 0; index < 10; index++) {
-            const element = response.events.event[index];
-            let name = element.title;
-            let desc = element.description;
-            let lat = parseFloat(element.latitude);
-            let lon = parseFloat(element.longitude);
-            let url = element.url;
-            let urlname = element.title;
-            drawEventMarker(name, desc, lat, lon, url, urlname, String(index+1));
-        }
-
-    })
-    .fail(function(err) {
-      throw err;
-    });
 }
 
 $("#search-button").on("click", function() {
