@@ -1,16 +1,14 @@
-  
-  
-  // Initialize Firebase
-  var config = {
+// Initialize Firebase
+var config = {
     apiKey: "AIzaSyBHIV5XSLliD3AKA3waOvxWWKdlbzaPY5k",
     authDomain: "whatsappening-bbad6.firebaseapp.com",
     databaseURL: "https://whatsappening-bbad6.firebaseio.com",
     projectId: "whatsappening-bbad6",
     storageBucket: "whatsappening-bbad6.appspot.com",
     messagingSenderId: "1086287293802"
-  };
-  firebase.initializeApp(config);
-  var database = firebase.database();  
+};
+firebase.initializeApp(config);
+var database = firebase.database();  
 
 var userLocation;
 var userLocated = false;
@@ -146,7 +144,6 @@ function meetupCall(calltype) {
     var endpointUrl = "https://api.meetup.com/2/open_events";
     
     // Perfoming an AJAX GET request to our queryURL
-    var search;
     var zip = 80210;
 
     // format call based on calltype parameter
