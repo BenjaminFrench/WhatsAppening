@@ -8,6 +8,7 @@
   <title>WhatsAppening</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation.min.css">
   <link rel="stylesheet" href="./assets/css/style.css">
+  <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
 </head>
 
 <body>
@@ -35,15 +36,15 @@
             </ul>
           </li>
           <!-- Fire Off-canvas sidebar -->
-          <ul class="menu">
+<!--           <ul class="menu">
           <li><button type="button" class="button" data-toggle="offCanvasRight">off-canvas Sidebar</button></li>
-        </ul>
+        </ul> -->
       </div>
 
       <!-- Nav login placeholder -->
       <div class="top-bar-right">
         <ul class="menu">
-          <li><input id="search-box" type="search" placeholder="Search"></li>
+          <li><input id="search-box" type="search" placeholder="Enter Zip Code Here"></li>
           <li><button id="search-button" type="button" class="button">Search</button></li>
         </ul>
       </div>
@@ -60,19 +61,18 @@
     <div class="reveal" id="exampleModal1" data-reveal>
       <h1>How to work with <br> What's Appening</h1>
       <p class="lead">Why we ask for your location . . . </p>
-      <p>If you cick "Allow" when prompted for your location, this will all What's Appening to present Meetups in your area.</p>
-      <p>If you'd rather enter your Zip Code, click the Zip Code link in the menu and we'll look for Meetups in your zip code.</p>
+      <p>If you cick "Allow" when prompted for your location, this will allow What's Appening to present Meetups in your area.</p>
+      <p>If you'd rather enter your Zip Code, you can do so in the Search field to the right.  We'll look for Meetups in your zip code.</p>
     <button class="close-button" data-close aria-label="Close modal" type="button">
       <span aria-hidden="true">&times;</span>
     </button>
-    </div>
-
+  </div>
 
   <!-- off-canvas Sidebar -->
   <div class="off-canvas-wrapper">
     <div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
       <!-- <div class="off-canvas position-left" id="offCanvasLeft" data-off-canvas></div> -->
-        <!-- left off-canvas markup -->
+      <!-- left off-canvas markup -->
 
       <div class="off-canvas position-right" id="offCanvasRight" data-off-canvas>
         <!-- right off-canvas markup -->
@@ -81,15 +81,25 @@
           <div class="row">
             <div class="columns">
               <ul class="tabs" data-tabs id="sidebar-tabs-offcanvas">
-                <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Tab 1</a></li>
-                <li class="tabs-title"><a href="#panel2">Tab 2</a></li>
+                <li id="off-canvas-tab1" class="tabs-title is-active"><a href="#panel1" aria-selected="true">Tab 1</a></li>
+                <li id="off-canvas-tab2" class="tabs-title"><a href="#panel2">Tab 2</a></li>
               </ul>
               <div class="tabs-content" data-tabs-content="sidebar-tabs-offcanvas">
                 <div class="tabs-panel is-active" id="panel1">
-                  <p>One</p>
+                  <div id=Event-List-Container>
+                    <div id="mTime">Date & Time</div>
+                    <div id="mGroup-Name">Group Name</div>
+                    <div id="mName">Event Name</div>
+                    <div id="mVenue-Name">Venue Name</div>
+                  </div>
                 </div>
                 <div class="tabs-panel" id="panel2">
-                  <p>Two</p>
+                  <div id=Event-Details-Container>
+                    <div id="mVenue-Name">Venue Name</div>
+                    <div id="mVenue-Address-City-Zip">Venue Address</div>
+                    <div id="mDescription">Event Description</div>
+                    <div id="mEvent-url">Event URL</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -98,53 +108,29 @@
       </div>
       <div class="off-canvas-content" data-off-canvas-content>
         <div id="mapDiv"></div>
-        <div class="cell small-6 medium-4 large-10">
-        <!-- <div class="row">
-          <div class="columns"> -->
-            <ul class="tabs" data-tabs id="sidebar-tabs-small">
-              <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Tab 1</a></li>
-              <li class="tabs-title"><a href="#panel2">Tab 2</a></li>
-            </ul>
-            <div class="tabs-content" data-tabs-content="sidebar-tabs-small">
-              <div class="tabs-panel is-active" id="panel1">
-                <p>One</p>
-              </div>
-              <div class="tabs-panel" id="panel2">
-                <p>Two</p>
-              </div>
-            </div>
-          <!-- </div>
-        </div> -->
-        </div>
       </div>
     </div>
   </div>
 
-<!-- main content -->
-  <!-- <div class="grid-container grid-container-padded">
-    <div class="grid-x grid-padding-x">
-      <div class="medium-6 large-8 cell" id="mapDiv">Map</div>
-      <div class="auto cell" id="Sidebar">
-      <div class="row">
-        <div class="columns">
-          <ul class="tabs" data-tabs id="example-tabs">
-            <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Tab 1</a></li>
-            <li class="tabs-title"><a href="#panel2">Tab 2</a></li>
-          </ul>
-          <div class="tabs-content" data-tabs-content="example-tabs">
-            <div class="tabs-panel is-active" id="panel1">
-              <p>One</p>
-            </div>
-            <div class="tabs-panel" id="panel2">
-              <p>Two</p>
-            </div>
-          </div>
+  <!-- backup sidebar  -->
+  <!-- <div class="cell small-6 medium-4 large-10">
+  <div class="row">
+    <div class="columns">
+      <ul class="tabs" data-tabs id="sidebar-tabs-small">
+        <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Tab 1</a></li>
+        <li class="tabs-title"><a href="#panel2">Tab 2</a></li>
+      </ul>
+      <div class="tabs-content" data-tabs-content="sidebar-tabs-small">
+        <div class="tabs-panel is-active" id="panel1">
+          <p>One</p>
+        </div>
+        <div class="tabs-panel" id="panel2">
+          <p>Two</p>
         </div>
       </div>
-      </div>
     </div>
+  </div>
   </div> -->
-
 
   <!-- JavaScript -->
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDx7lhZ9k6uXTmOw9SZupJMzEtdVCv7cxU&callback=initMap"></script>
@@ -153,8 +139,9 @@
   <script src="./assets/javascript/app.js"></script>
   <script type="text/javascript">
     $(document).foundation();
-    // var elem = new Foundation.ResponsiveMenu(nav-main, options);
-    // $('#nav-main').foundation('toggleMenu');
+    // toggling off canvas sidebar with js
+    // $('#offCanvasRight').foundation('open', event)
+    // $('#offCanvasRight').foundation('close', event)
   </script>
 </body>
 
