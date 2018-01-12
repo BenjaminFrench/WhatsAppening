@@ -122,8 +122,9 @@ function drawEventMarker(name, description, lat, lon, url, urlname, label) {
         // Open the marker's infowindow
         infowindow.open(map, marker);
         
-        // Open the offcanvas sidebar
-        $('#offCanvasRight').foundation('open', event)
+        // Open the offcanvas sidebar, select tab 2
+        $('#offCanvasRight').foundation('open', event);
+        $("#sidebar-tabs-offcanvas").foundation('selectTab', 'panel2');
     });
 
     // Push each marker into a global array so we can delete them all later
