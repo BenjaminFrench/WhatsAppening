@@ -12,6 +12,12 @@ html, body {
     margin: 0 auto;
 }
 
+#location-img {
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+}
+
  #callout-styled {
   padding-top: 0px;
   padding-bottom:0px;
