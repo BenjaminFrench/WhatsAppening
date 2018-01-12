@@ -1,3 +1,17 @@
+  
+  
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyBHIV5XSLliD3AKA3waOvxWWKdlbzaPY5k",
+    authDomain: "whatsappening-bbad6.firebaseapp.com",
+    databaseURL: "https://whatsappening-bbad6.firebaseio.com",
+    projectId: "whatsappening-bbad6",
+    storageBucket: "whatsappening-bbad6.appspot.com",
+    messagingSenderId: "1086287293802"
+  };
+  firebase.initializeApp(config);
+  var database = firebase.database();  
+
 var userLocation;
 var userLocated = false;
 
@@ -38,6 +52,17 @@ function initMap() {
             
             // Center map on user's location
             map.setCenter(pos);
+            var date = Date();
+            console.log(date);
+            var userInfo = { 
+                time: date,
+                lat: pos.lat,
+                lon: pos.lng
+            };
+            // latitude: userLocation.pos.lat;
+            // longitude:
+
+            database.ref().push(userInfo);
 
             // Make api call with user's location and no search query
             meetupCall(0);
