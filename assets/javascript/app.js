@@ -6,6 +6,7 @@ var config = {
     projectId: "whatsappening-bbad6",
     storageBucket: "whatsappening-bbad6.appspot.com",
     messagingSenderId: "1086287293802"
+
 };
 firebase.initializeApp(config);
 var database = firebase.database();  
@@ -27,13 +28,13 @@ function initMap() {
             lng: -104.9903
         },
         zoom: 8,
-        gestureHandling: 'cooperative',        
+        gestureHandling: 'cooperative',
         streetViewControl: false,
         mapTypeControl: true,
         mapTypeControlOptions: {
           style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
           mapTypeIds: ['roadmap', 'terrain']
-        }    
+        }
     });
     infoWindow = new google.maps.InfoWindow;
 
@@ -50,12 +51,12 @@ function initMap() {
             // infoWindow.setPosition(pos);
             // infoWindow.setContent('Location found.');
             // infoWindow.open(map);
-            
+
             // Center map on user's location
             map.setCenter(pos);
             var date = Date();
             console.log(date);
-            var userInfo = { 
+            var userInfo = {
                 time: date,
                 lat: pos.lat,
                 lon: pos.lng
@@ -67,7 +68,7 @@ function initMap() {
 
             // Make api call with user's location and no search query
             meetupCall(0);
-            
+
         },
         function () {
             // Geolocation failed
@@ -85,7 +86,7 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     userLocated = false;
 
     // show modal if geolocation fails or is blocked
-    $("#exampleModal1").foundation('open');
+    $("#Modal-howto").foundation('open');
 
     // infoWindow.setPosition(pos);
     // infoWindow.setContent(browserHasGeolocation ?
@@ -139,7 +140,7 @@ function drawEventMarker(name, description, lat, lon, url, urlname, label) {
     marker.addListener('click', function () {
         // Open the marker's infowindow
         infowindow.open(map, marker);
-        
+
         // Open the offcanvas sidebar, select tab 2
         $('#offCanvasRight').foundation('open', event);
         $("#sidebar-tabs-offcanvas").foundation('selectTab', 'panel2');
@@ -161,7 +162,7 @@ function clearEventMarkers() {
 function meetupCall(calltype) {
     var apiKey = "4f744e465f2424426f5d1a5b2532ab";
     var endpointUrl = "https://api.meetup.com/2/open_events";
-    
+
     // Perfoming an AJAX GET request to our queryURL
     var zip = 80210;
 

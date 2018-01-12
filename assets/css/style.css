@@ -2,11 +2,20 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    background-color: black;
   }
 
 #mapDiv {
-    /* height: 100%; */
     height: 500px;
+    max-width:1400px;
+    display: block;
+    margin: 0 auto;
+}
+
+#location-img {
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
 }
 
  #callout-styled {
@@ -18,10 +27,23 @@ html, body {
   width: 100%;
   height: 200px;
   max-width:1400px;
-} 
+  display: block;
+  margin: 0 auto;
+}
 
-#location-img {
-  width: 36px;
-  height: 36px;
-  cursor: pointer;
+.logo-wrapper {
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+    padding-left: 10px;
+}
+
+.position-right {
+  width: 600px;
+}
+
+@media (max-width: 639px) {
+  .position-right {
+    width: 250px;
+  }
 }
