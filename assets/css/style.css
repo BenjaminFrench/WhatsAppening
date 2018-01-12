@@ -19,3 +19,9 @@ html, body {
   height: 200px;
   max-width:1400px;
 } 
+
+#location-img {
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+}
