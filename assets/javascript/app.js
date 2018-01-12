@@ -1,3 +1,17 @@
+  
+  
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyBHIV5XSLliD3AKA3waOvxWWKdlbzaPY5k",
+    authDomain: "whatsappening-bbad6.firebaseapp.com",
+    databaseURL: "https://whatsappening-bbad6.firebaseio.com",
+    projectId: "whatsappening-bbad6",
+    storageBucket: "whatsappening-bbad6.appspot.com",
+    messagingSenderId: "1086287293802"
+  };
+  firebase.initializeApp(config);
+  var database = firebase.database();  
+
 var userLocation;
 
 var map, infoWindow;
@@ -25,6 +39,17 @@ function initMap() {
             infoWindow.setContent('Location found.');
             infoWindow.open(map);
             map.setCenter(pos);
+            var date = Date();
+            console.log(date);
+            var userInfo = { 
+                time: date,
+                lat: pos.lat,
+                lon: pos.lng
+            };
+            // latitude: userLocation.pos.lat;
+            // longitude:
+
+            database.ref().push(userInfo);
         }, function () {
             handleLocationError(true, infoWindow, map.getCenter());
         });
@@ -142,3 +167,4 @@ function eventCall() {
       throw err;
     });
 }
+
