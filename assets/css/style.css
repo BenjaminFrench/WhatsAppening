@@ -42,8 +42,41 @@ html, body {
   width: 600px;
 }
 
-@media (max-width: 639px) {
+ div.top-bar {
+   flex-wrap: wrap;
+}
+
+.single-event {
+  background-color: #ECECEC;
+  margin-bottom: 20px;
+}
+
+.detail-event {
+  background-color: #ECECEC;
+}
+#mTime {
+  color: #0e1f4a;
+  weight: 10px;
+}
+/* #mGroup-Name {
+  font-size: 12px;
+} */
+
+/* #mGroup-Name, #mVenue-Address-City-Zip {
+  align: center;
+} */
+
+/* long term move towards flex column for nav bar items */
+@media (max-width: 847px) {
   .position-right {
     width: 250px;
+  }
+  .top-bar .top-bar-right{
+    width: 100%;
+    flex: auto;
+  }
+  .menu {
+    align-items: center;
+    justify-content: center;
   }
 }
