@@ -19,6 +19,7 @@ var infoWindow;
 var geocoder;
 
 var markers = [];
+var events = [];
 
 function initMap() {
     geocoder = new google.maps.Geocoder();
@@ -111,6 +112,7 @@ function codeZip() {
   }
 
 function drawEventMarker(name, description, lat, lon, url, urlname, label) {
+    var index = parseInt(label)-1;
     // Make content string for the markers infowindow
     var contentString = `<div id="content">
     <h4 id="firstHeading" class="firstHeading">${name}</h4>
@@ -144,6 +146,7 @@ function drawEventMarker(name, description, lat, lon, url, urlname, label) {
         // Open the offcanvas sidebar, select tab 2
         $('#offCanvasRight').foundation('open', event);
         $("#sidebar-tabs-offcanvas").foundation('selectTab', 'panel2');
+        showEventInfo(index);
     });
 
     // Push each marker into a global array so we can delete them all later
@@ -192,6 +195,9 @@ function meetupCall(calltype) {
     if (markers.length !== 0) {
         clearEventMarkers();
     }
+    if (events.length !== 0) {
+        events.length = 0;
+    }
 
     $.ajax({
         url: endpointUrl,
@@ -203,6 +209,7 @@ function meetupCall(calltype) {
                 throw "No results";
             }
             console.log(endpointUrl);
+            $("#panel1").empty();
 
             for (var index = 0; index < 10; index++) {
                 const element = response.results[index];
@@ -213,14 +220,45 @@ function meetupCall(calltype) {
                     var lon = element.venue.lon;
                     var url = element.event_url;
                     var urlname = element.group.urlname;
+
+                    var timeString = moment(element.time).format("MMMM Do YYYY, h:mm a");
+                    var print = `
+                    <div class="single-event" id="event-${index}" event-num="${index}">
+                        <ul class="no-bullet">
+                            <li><h3 id="mTime">${index+1}. ${timeString}</h3></li>
+                            <li id="mName">${element.name}</li>
+                            <li id="mGroup-Name">${element.group.name}</li>
+                            <li id="mVenue-Name">${element.venue.name}</li>
+                            <li id="mVenue-address">${element.venue.address_1}</li>
+                        </ul>
+                    </div>`;
+                    $("#panel1").append(print);
+                    $("#event-"+ String(index)).on("click", eventListItemClickHandler);
+
                     drawEventMarker(name, desc, lat, lon, url, urlname, String(index + 1));
+                    events.push(element);
                 }
                 else if (element.hasOwnProperty('group')) {
+                    // no venue property
                     var lat = element.group.group_lat;
                     var lon = element.group.group_lon;
                     var url = element.event_url;
                     var urlname = element.group.urlname;
+
+                    var timeString = moment(element.time).format("MMMM Do YYYY, h:mm a");
+                    var print = `
+                    <div class="single-event" id="event-${index}" event-num="${index}">
+                        <ul class="no-bullet">
+                            <li><h3 id="mTime">${index+1}. ${timeString}</h3></li>
+                            <li id="mName">${element.name}</li>
+                            <li id="mGroup-Name">${element.group.name}</li>
+                        </ul>
+                    </div>`;
+                    $("#panel1").append(print);
+                    $("#event-"+ String(index)).on("click", eventListItemClickHandler);
+
                     drawEventMarker(name, desc, lat, lon, url, urlname, String(index + 1));
+                    events.push(element);
                 }
             }
 
@@ -249,6 +287,47 @@ $("#search-button").on("click", function(event) {
     }
     
 });
+
+function eventListItemClickHandler() {
+    var index = parseInt($(this).attr("event-num"));
+
+    showEventInfo(index);
+    
+    
+}
+
+function showEventInfo(eventNumber) {
+    // select tab 2 and show details
+    $("#sidebar-tabs-offcanvas").foundation('selectTab', 'panel2');
+    $("#panel2").empty();
+
+    var print;
+    
+    if (events[eventNumber].hasOwnProperty('venue')) {
+        print = `
+        <div class="detail-event">
+            <ul class="no-bullet">
+                <li><h3 id="mEvent-Name"><a href="${events[eventNumber].event_url}">${eventNumber+1}. ${events[eventNumber].name}</a></h3></li>
+                <li id="mGroup-name">${events[eventNumber].group.name}</li>
+                <li><h4 id="mVenue-Name">${events[eventNumber].venue.name}</h4></li>
+                <li id="mVenue-Address-City-Zip">${events[eventNumber].venue.address_1}</li>
+                <li id="mDescription">${events[eventNumber].description}</li>
+            </ul>
+        </div>`
+    }
+    else {
+        print = `
+        <div class="detail-event">
+            <ul class="no-bullet">
+                <li><h3 id="mEvent-Name"><a href="${events[eventNumber].event_url}">${eventNumber+1}. ${events[eventNumber].name}</a></h3></li>
+                <li id="mGroup-name">${events[eventNumber].group.name}</li>
+                <li id="mDescription">${events[eventNumber].description}</li>
+            </ul>
+        </div>`
+    }
+
+    $("#panel2").append(print);
+}
 
 $("#location-img").on("click", function() {
     if (userLocated) {
