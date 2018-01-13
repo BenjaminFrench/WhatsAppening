@@ -112,6 +112,7 @@ function codeZip() {
   }
 
 function drawEventMarker(name, description, lat, lon, url, urlname, label) {
+    var index = parseInt(label)-1;
     // Make content string for the markers infowindow
     var contentString = `<div id="content">
     <h4 id="firstHeading" class="firstHeading">${name}</h4>
@@ -145,6 +146,7 @@ function drawEventMarker(name, description, lat, lon, url, urlname, label) {
         // Open the offcanvas sidebar, select tab 2
         $('#offCanvasRight').foundation('open', event);
         $("#sidebar-tabs-offcanvas").foundation('selectTab', 'panel2');
+        showEventInfo(index);
     });
 
     // Push each marker into a global array so we can delete them all later
@@ -226,7 +228,8 @@ function meetupCall(calltype) {
                             <li><h3 id="mTime">${index+1}. ${timeString}</h3></li>
                             <li id="mGroup-Name">${element.group.name}</li>
                             <li id="mName">${element.name}</li>
-                            <li id="mVenue-Name">${element.venue.address_1}</li>
+                            <li id="mVenue-Name">${element.venue.name}</li>
+                            <li id="mVenue-address">${element.venue.address_1}</li>
                         </ul>
                     </div>`;
                     $("#panel1").append(print);
@@ -236,11 +239,26 @@ function meetupCall(calltype) {
                     events.push(element);
                 }
                 else if (element.hasOwnProperty('group')) {
+                    // no venue property
                     var lat = element.group.group_lat;
                     var lon = element.group.group_lon;
                     var url = element.event_url;
                     var urlname = element.group.urlname;
+
+                    var timeString = moment(element.time).format("MMMM Do YYYY, h:mm a");
+                    var print = `
+                    <div class="single-event" id="event-${index+1}" event-num="${index}">
+                        <ul class="no-bullet">
+                            <li><h3 id="mTime">${index+1}. ${timeString}</h3></li>
+                            <li id="mGroup-Name">${element.group.name}</li>
+                            <li id="mName">${element.name}</li>
+                        </ul>
+                    </div>`;
+                    $("#panel1").append(print);
+                    $("#event-"+ String(index)).on("click", eventListItemClickHandler);
+
                     drawEventMarker(name, desc, lat, lon, url, urlname, String(index + 1));
+                    events.push(element);
                 }
             }
 
@@ -272,22 +290,41 @@ $("#search-button").on("click", function(event) {
 
 function eventListItemClickHandler() {
     var index = parseInt($(this).attr("event-num"));
+
+    showEventInfo(index);
     
+    
+}
+
+function showEventInfo(eventNumber) {
     // select tab 2 and show details
     $("#sidebar-tabs-offcanvas").foundation('selectTab', 'panel2');
     $("#panel2").empty();
-    
 
-    var print = `
-    <div class="detail-event">
-        <ul class="no-bullet">
-            <li><h3 id="mEvent-Name"><a href="${events[index].event_url}">${events[index].name}</a></h3></li>
-            <li><h4 id="mVenue-Name">${events[index].venue.name}</h4></li>
-            <li id="mVenue-Address-City-Zip">${events[index].venue.address_1}</li>
-            <li id="mDescription">${events[index].description}</li>
-            <li id="mEvent-url"></li>
-        </ul>
-    </div>`
+    var print;
+    
+    if (events[eventNumber].hasOwnProperty('venue')) {
+        print = `
+        <div class="detail-event">
+            <ul class="no-bullet">
+                <li><h3 id="mEvent-Name"><a href="${events[eventNumber].event_url}">${events[eventNumber].name}</a></h3></li>
+                <li id="mGroup-name">${events[eventNumber].group.name}</li>
+                <li><h4 id="mVenue-Name">${events[eventNumber].venue.name}</h4></li>
+                <li id="mVenue-Address-City-Zip">${events[eventNumber].venue.address_1}</li>
+                <li id="mDescription">${events[eventNumber].description}</li>
+            </ul>
+        </div>`
+    }
+    else {
+        print = `
+        <div class="detail-event">
+            <ul class="no-bullet">
+                <li><h3 id="mEvent-Name"><a href="${events[eventNumber].event_url}">${events[eventNumber].name}</a></h3></li>
+                <li id="mGroup-name">${events[eventNumber].group.name}</li>
+                <li id="mDescription">${events[eventNumber].description}</li>
+            </ul>
+        </div>`
+    }
 
     $("#panel2").append(print);
 }
