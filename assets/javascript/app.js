@@ -223,11 +223,11 @@ function meetupCall(calltype) {
 
                     var timeString = moment(element.time).format("MMMM Do YYYY, h:mm a");
                     var print = `
-                    <div class="single-event" id="event-${index+1}" event-num="${index}">
+                    <div class="single-event" id="event-${index}" event-num="${index}">
                         <ul class="no-bullet">
                             <li><h3 id="mTime">${index+1}. ${timeString}</h3></li>
-                            <li id="mGroup-Name">${element.group.name}</li>
                             <li id="mName">${element.name}</li>
+                            <li id="mGroup-Name">${element.group.name}</li>
                             <li id="mVenue-Name">${element.venue.name}</li>
                             <li id="mVenue-address">${element.venue.address_1}</li>
                         </ul>
@@ -247,11 +247,11 @@ function meetupCall(calltype) {
 
                     var timeString = moment(element.time).format("MMMM Do YYYY, h:mm a");
                     var print = `
-                    <div class="single-event" id="event-${index+1}" event-num="${index}">
+                    <div class="single-event" id="event-${index}" event-num="${index}">
                         <ul class="no-bullet">
                             <li><h3 id="mTime">${index+1}. ${timeString}</h3></li>
-                            <li id="mGroup-Name">${element.group.name}</li>
                             <li id="mName">${element.name}</li>
+                            <li id="mGroup-Name">${element.group.name}</li>
                         </ul>
                     </div>`;
                     $("#panel1").append(print);
@@ -307,7 +307,7 @@ function showEventInfo(eventNumber) {
         print = `
         <div class="detail-event">
             <ul class="no-bullet">
-                <li><h3 id="mEvent-Name"><a href="${events[eventNumber].event_url}">${events[eventNumber].name}</a></h3></li>
+                <li><h3 id="mEvent-Name"><a href="${events[eventNumber].event_url}">${eventNumber+1}. ${events[eventNumber].name}</a></h3></li>
                 <li id="mGroup-name">${events[eventNumber].group.name}</li>
                 <li><h4 id="mVenue-Name">${events[eventNumber].venue.name}</h4></li>
                 <li id="mVenue-Address-City-Zip">${events[eventNumber].venue.address_1}</li>
@@ -319,7 +319,7 @@ function showEventInfo(eventNumber) {
         print = `
         <div class="detail-event">
             <ul class="no-bullet">
-                <li><h3 id="mEvent-Name"><a href="${events[eventNumber].event_url}">${events[eventNumber].name}</a></h3></li>
+                <li><h3 id="mEvent-Name"><a href="${events[eventNumber].event_url}">${eventNumber+1}. ${events[eventNumber].name}</a></h3></li>
                 <li id="mGroup-name">${events[eventNumber].group.name}</li>
                 <li id="mDescription">${events[eventNumber].description}</li>
             </ul>
