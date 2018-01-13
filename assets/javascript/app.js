@@ -19,6 +19,7 @@ var infoWindow;
 var geocoder;
 
 var markers = [];
+var events = [];
 
 function initMap() {
     geocoder = new google.maps.Geocoder();
@@ -192,6 +193,9 @@ function meetupCall(calltype) {
     if (markers.length !== 0) {
         clearEventMarkers();
     }
+    if (events.length !== 0) {
+        events.length = 0;
+    }
 
     $.ajax({
         url: endpointUrl,
@@ -203,6 +207,7 @@ function meetupCall(calltype) {
                 throw "No results";
             }
             console.log(endpointUrl);
+            $("#panel1").empty();
 
             for (var index = 0; index < 10; index++) {
                 const element = response.results[index];
@@ -213,7 +218,22 @@ function meetupCall(calltype) {
                     var lon = element.venue.lon;
                     var url = element.event_url;
                     var urlname = element.group.urlname;
+
+                    var timeString = moment(element.time).format("MMMM Do YYYY, h:mm a");
+                    var print = `
+                    <div class="single-event" id="event-${index+1}" event-num="${index}">
+                        <ul class="no-bullet">
+                            <li><h3 id="mTime">${index+1}. ${timeString}</h3></li>
+                            <li id="mGroup-Name">${element.group.name}</li>
+                            <li id="mName">${element.name}</li>
+                            <li id="mVenue-Name">${element.venue.address_1}</li>
+                        </ul>
+                    </div>`;
+                    $("#panel1").append(print);
+                    $("#event-"+ String(index)).on("click", eventListItemClickHandler);
+
                     drawEventMarker(name, desc, lat, lon, url, urlname, String(index + 1));
+                    events.push(element);
                 }
                 else if (element.hasOwnProperty('group')) {
                     var lat = element.group.group_lat;
@@ -249,6 +269,28 @@ $("#search-button").on("click", function(event) {
     }
     
 });
+
+function eventListItemClickHandler() {
+    var index = parseInt($(this).attr("event-num"));
+    
+    // select tab 2 and show details
+    $("#sidebar-tabs-offcanvas").foundation('selectTab', 'panel2');
+    $("#panel2").empty();
+    
+
+    var print = `
+    <div class="detail-event">
+        <ul class="no-bullet">
+            <li><h3 id="mEvent-Name"><a href="${events[index].event_url}">${events[index].name}</a></h3></li>
+            <li><h4 id="mVenue-Name">${events[index].venue.name}</h4></li>
+            <li id="mVenue-Address-City-Zip">${events[index].venue.address_1}</li>
+            <li id="mDescription">${events[index].description}</li>
+            <li id="mEvent-url"></li>
+        </ul>
+    </div>`
+
+    $("#panel2").append(print);
+}
 
 $("#location-img").on("click", function() {
     if (userLocated) {
